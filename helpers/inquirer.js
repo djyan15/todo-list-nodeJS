@@ -78,4 +78,72 @@ const leerInput = async (message) => {
   return desc;
 };
 
-module.exports = { inquirerMenu, pausa, leerInput };
+const listadoTareasBorrar = async (tareas = []) => {
+  const choices = mapTareasShow(tareas);
+  choices.unshift({
+    value: "0",
+    name: "0. ".cyan + "Cancelar",
+  });
+
+  const listTareaBorrar = [
+    {
+      type: "list",
+      name: "id",
+      message: "¿Qué tarea desea eliminar?",
+      choices,
+    },
+  ];
+
+  const { id } = await inquirer.prompt(listTareaBorrar);
+
+  return id;
+};
+
+const confirmar = async (message) => {
+  const confirmTareaBorrar = [
+    {
+      type: "confirm",
+      name: "ok",
+      message,
+    },
+  ];
+
+  const { ok } = await inquirer.prompt(confirmTareaBorrar);
+  return ok;
+};
+
+const listadoCompletarTareas = async (tareas = []) => {
+  const choices = mapTareasShow(tareas);
+  const listTareaBorrar = [
+    {
+      type: "checkbox",
+      name: "answers",
+      message: "Selecciones",
+      choices,
+    },
+  ];
+
+  const { answers } = await inquirer.prompt(listTareaBorrar);
+
+  return answers;
+};
+
+const mapTareasShow = (tareas = []) => {
+  return tareas.map((tarea, i) => {
+    const idx = `${i + 1}.`.cyan;
+    return {
+      value: tarea.id,
+      name: `${idx} ${tarea.desc}`,
+      checked: tarea.completadoEn,
+    };
+  });
+};
+
+module.exports = {
+  inquirerMenu,
+  pausa,
+  leerInput,
+  listadoTareasBorrar,
+  confirmar,
+  listadoCompletarTareas,
+};
